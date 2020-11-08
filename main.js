@@ -124,8 +124,11 @@ class Game extends Component {
 }
 
 // ========================================
+let game = <Game />
+window.game = game
+console.log(game)
 
-render(<Game />, document.getElementById("root"));
+render(game, document.getElementById("root"));
 
 function calculateWinner(squares) {
   const lines = [
