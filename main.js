@@ -1,9 +1,13 @@
 const { createElement, render, Component } = require('./react.js')
 
 class Mycomponent extends Component {
-  // constructor(type){
-
-  // }
+  constructor(){
+    super()
+    this.state = {
+      a:1,
+      b:2
+    }
+  }
 
   // setAttribute(name, value){
 
@@ -14,8 +18,13 @@ class Mycomponent extends Component {
   // }
 
   render(){
-    return <div>my component
-      {this.children}
+    return <div>
+      <h1>my component</h1> 
+      <button onClick={() => {this.setState({a: this.state.a+1})}}>add</button>
+      <span>{this.state.a}</span>
+      <span>{this.state.b}</span>
+
+      {/* {this.children} */}
     </div>
   }
 
