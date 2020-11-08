@@ -6,11 +6,17 @@ class ElementWarpper {
   }
 
   setAttribute(name, value){
+    if(name === 'className'){
+      this.root.setAttribute('class', value)
+      return
+    }
+
     if(name.match(/^on([\s\S]+)/)){
       this.root.addEventListener(RegExp.$1.replace(/^[\s\S]/, c=>c.toLocaleLowerCase()), value)
-    } else {
-      this.root.setAttribute(name, value)
+      return
     }
+
+    this.root.setAttribute(name, value)
   }
 
   appendChild(component){
@@ -69,8 +75,20 @@ class Component {
   }
 
   rerender(){
-    this._range.deleteContents()
-    this[RENDER_TO_DOM](this._range)
+    // 此时 range 被删除，全空会有问题，因此需要修改逻辑为先插入再删除
+    // this._range.deleteContents()
+    // this[RENDER_TO_DOM](this._range)
+
+    let oldRange = this._range
+
+    // 创建新的 range
+    let range = document.createRange()
+    range.setStart(oldRange.startContainer, oldRange.startOffset)
+    range.setEnd(oldRange.startContainer, oldRange.startOffset)
+    this[RENDER_TO_DOM](range)
+
+    oldRange.setStart(range.endContainer, range.endOffset)
+    oldRange.deleteContents()
   }
 
   // get root (){
@@ -128,6 +146,10 @@ module.exports = {
     let insertChild = (children) => {
 
       for(let child of children){
+
+        if(child === null){
+          continue
+        }
 
         if(typeof child === 'string' || typeof child === 'number'){
           child = new TextNodeWarpper(child.toString())
